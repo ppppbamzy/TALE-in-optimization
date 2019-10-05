@@ -210,7 +210,7 @@ int pke_enc(unsigned char *pk, unsigned long long pklen, unsigned char *m,
         mm[i] = (m[i / 8] >> (i % 8)) & 1;
 
     for (i = 0; i < N; i++) {
-        alpha[i] = (Remain(c_1[i]) % 2 + 2) % 2;
+        alpha[i] = Remain(c_1[i]) & 1;
         mm[i] = (mm[i] + alpha[i]) % 2;
         c_2[i] = (c_0[i] + mm[i]) % Q;
 
@@ -222,14 +222,14 @@ int pke_enc(unsigned char *pk, unsigned long long pklen, unsigned char *m,
     poly_tobyte(c, c_2);
     for (i = 0; i < N / 8; i++) {
         c[PKE_POLY_BYTES + i] = 0;
-        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 0];
-        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 1] * 2;
-        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 2] * 4;
-        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 3] * 8;
-        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 4] * 16;
-        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 5] * 32;
-        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 6] * 64;
-        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 7] * 128;
+        c[PKE_POLY_BYTES + i] |= c_3[8 * i + 0];
+        c[PKE_POLY_BYTES + i] |= c_3[8 * i + 1] * 2;
+        c[PKE_POLY_BYTES + i] |= c_3[8 * i + 2] * 4;
+        c[PKE_POLY_BYTES + i] |= c_3[8 * i + 3] * 8;
+        c[PKE_POLY_BYTES + i] |= c_3[8 * i + 4] * 16;
+        c[PKE_POLY_BYTES + i] |= c_3[8 * i + 5] * 32;
+        c[PKE_POLY_BYTES + i] |= c_3[8 * i + 6] * 64;
+        c[PKE_POLY_BYTES + i] |= c_3[8 * i + 7] * 128;
     }
 
     // for(i=0;i<mlen;i++)
