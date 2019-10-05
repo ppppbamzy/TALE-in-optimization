@@ -318,13 +318,9 @@ int pke_dec(unsigned char *sk, unsigned long long sklen,
         mmprime[i] = (ccs[i] + (Q - 1) / 2 * cprime[i]); //(-(Q-1)/2,Q)之间
 
         if (mmprime[i] >= (Q - 1) / 2)
-
             mprime[i] = ((mmprime[i] - Q) % 2 + 2) % 2;
-
         else if (mmprime[i] >= -(Q - 1) / 2 && mmprime[i] < 0)
-
             mprime[i] = ((mmprime[i]) % 2 + 2) % 2;
-
         else
             mprime[i] = mmprime[i] % 2;
     }
