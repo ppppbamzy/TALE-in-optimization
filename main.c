@@ -16,6 +16,8 @@ int main() {
     
     clock_t start, finish;
     double total_time;
+
+
     start = clock();
     for (int i = 0; i < NTESTS; i++) {
         pke_keygen(pk, &pklen, sk, &sklen);
@@ -32,8 +34,18 @@ int main() {
     finish = clock();
     total_time = (double)(finish - start) / CLOCKS_PER_SEC;
     printf("enc %f us\n", (total_time * 1000000 / NTESTS));
+
+    pke_keygen(pk, &pklen, sk, &sklen);
+    pke_enc(pk, PKE_PUBLICKEYBYTES, m, PKE_MESS_BYTES, c, PKE_CIP_BYTES);
+    start = clock();
+    for (int i = 0; i < NTESTS; i++) {
+        pke_enc(pk, PKE_PUBLICKEYBYTES, m, PKE_MESS_BYTES, c, PKE_CIP_BYTES);
+    }
+    finish = clock();
+    total_time = (double)(finish - start) / CLOCKS_PER_SEC;
+    printf("dec %f us\n", (total_time * 1000000 / NTESTS));
+
+
     return 0;
 }
 
-// I love zeze
-// I love bamzy tooooooooooooo
