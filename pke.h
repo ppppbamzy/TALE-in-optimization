@@ -15,24 +15,24 @@ unsigned long long pke_get_sk_byts();
 
 unsigned long long pke_get_ct_byts();
 
-int pke_keygen(unsigned char *pk, unsigned long long *pklen, unsigned char *sk,
-               unsigned long long *sklen);
+int pke_keygen(unsigned char *pk, unsigned long long *pointer_pklen,
+               unsigned char *sk, unsigned long long *pointer_sklen);
 
 int pke_enc(unsigned char *pk, unsigned long long pklen, unsigned char *m,
             unsigned long long mlen, unsigned char *c,
-            unsigned long long *clen);
+            unsigned long long *pointer_clen);
 
-int pke_dec(unsigned char *sk, unsigned long long sklen, unsigned char *c,
-            unsigned long long clen, unsigned char *m,
-            unsigned long long *mlen);
+int pke_dec(unsigned char *sk, unsigned long long sklen,
+            unsigned char *c, unsigned long long clen,
+            unsigned char *m, unsigned long long *pointer_mlen);
 
 int pke_enc_with_param_fixed(unsigned char *pk, unsigned long long pklen,
                              unsigned char *m, unsigned long long mlen,
                              unsigned char *rand, unsigned long long randbyts,
-                             unsigned char *c, unsigned long long *clen);
+                             unsigned char *c, unsigned long long *pointer_clen);
 
 int pke_dec_with_param_fixed(unsigned char *sk, unsigned long long sklen,
                              unsigned char *c, unsigned long long clen,
-                             unsigned char *m, unsigned long long *mlen);
+                             unsigned char *m, unsigned long long *pointer_mlen);
 
 #endif /* pke_h */
