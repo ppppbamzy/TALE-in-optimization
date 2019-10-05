@@ -363,110 +363,110 @@ int pke_enc_with_param_fixed(unsigned char *pk, unsigned long long pklen,
                              unsigned char *c, unsigned long long *pointer_clen)
 
 {
-    uint16_t r[N], e[N], e_r[N], c_0[N], c_1[N], c_2[N], c_3[N], ar[N], a[N],
-        br[N], mm[N], bb[N], alpha[N];
-    int16_t c_4[N];
-    unsigned char seed[PKE_SEED_BYTES], b[PKE_POLY_BYTES], rb[PKE_POLY_BYTES],
-        eb[PKE_POLY_BYTES], erb[PKE_POLY_BYTES];
-    unsigned char seed1[3 * N / 2];
-    int i;
-    for (i = 0; i < PKE_SEED_BYTES; i++)
-        seed[i] = pk[PKE_POLY_BYTES + i];
+//     uint16_t r[N], e[N], e_r[N], c_0[N], c_1[N], c_2[N], c_3[N], ar[N], a[N],
+//         br[N], mm[N], bb[N], alpha[N];
+//     int16_t c_4[N];
+//     unsigned char seed[PKE_SEED_BYTES], b[PKE_POLY_BYTES], rb[PKE_POLY_BYTES],
+//         eb[PKE_POLY_BYTES], erb[PKE_POLY_BYTES];
+//     unsigned char seed1[3 * N / 2];
+//     int i;
+//     for (i = 0; i < PKE_SEED_BYTES; i++)
+//         seed[i] = pk[PKE_POLY_BYTES + i];
 
-    poly_gen_a(a, seed);
-    // unsigned char seed1[SEED_BYTES];
-    // RAND_bytes(seed1, SEED_BYTES);
-    // shake256(seed1, SEED_BYTES,seed1, SEED_BYTES);
+//     poly_gen_a(a, seed);
+//     // unsigned char seed1[SEED_BYTES];
+//     // RAND_bytes(seed1, SEED_BYTES);
+//     // shake256(seed1, SEED_BYTES,seed1, SEED_BYTES);
 
-    /*RAND_bytes(seed1,3*N/2);
-    shake256(seed1,3*N/2,seed1,3*N/2);
-    for(i=0;i<N;i++)
-    {
-    r[i]=((seed1[i/8]>>(i%8))&1)-((seed1[i/8+N/8]>>(i%8))&1)+((seed1[i/8+N/4]>>(i%8))&1)-((seed1[i/8+3*N/8]>>(i%8))&1)+Q;
-        e[i]=((seed1[i/8+N/2]>>(i%8))&1)-((seed1[i/8+5*N/8]>>(i%8))&1)+((seed1[i/8+3*N/4]>>(i%8))&1)-((seed1[i/8+7*N/8]>>(i%8))&1)+Q;
-        e_r[i]=((seed1[i/8+N]>>(i%8))&1)-((seed1[i/8+9*N/8]>>(i%8))&1)+((seed1[i/8+5*N/4]>>(i%8))&1)-((seed1[i/8+11*N/8]>>(i%8))&1)+Q;
+//     /*RAND_bytes(seed1,3*N/2);
+//     shake256(seed1,3*N/2,seed1,3*N/2);
+//     for(i=0;i<N;i++)
+//     {
+//     r[i]=((seed1[i/8]>>(i%8))&1)-((seed1[i/8+N/8]>>(i%8))&1)+((seed1[i/8+N/4]>>(i%8))&1)-((seed1[i/8+3*N/8]>>(i%8))&1)+Q;
+//         e[i]=((seed1[i/8+N/2]>>(i%8))&1)-((seed1[i/8+5*N/8]>>(i%8))&1)+((seed1[i/8+3*N/4]>>(i%8))&1)-((seed1[i/8+7*N/8]>>(i%8))&1)+Q;
+//         e_r[i]=((seed1[i/8+N]>>(i%8))&1)-((seed1[i/8+9*N/8]>>(i%8))&1)+((seed1[i/8+5*N/4]>>(i%8))&1)-((seed1[i/8+11*N/8]>>(i%8))&1)+Q;
 
-    }*/
+//     }*/
 
-    for (i = 0; i < PKE_POLY_BYTES; i++) {
-        rb[i] = rand[i];
-        eb[i] = rand[i + PKE_POLY_BYTES];
-        erb[i] = rand[i + 2 * PKE_POLY_BYTES];
-    }
+//     for (i = 0; i < PKE_POLY_BYTES; i++) {
+//         rb[i] = rand[i];
+//         eb[i] = rand[i + PKE_POLY_BYTES];
+//         erb[i] = rand[i + 2 * PKE_POLY_BYTES];
+//     }
 
-    // cbd(r,seed1,0);
-    // cbd(e,seed1,1);
-    // cbd(e_r,seed1,2);
-    /* for(i=0;i<N;i++)
-     {
-         e[i]=2*e[i]%Q;
-         e_r[i]=2*e_r[i]%Q;
-     }
-     */
+//     // cbd(r,seed1,0);
+//     // cbd(e,seed1,1);
+//     // cbd(e_r,seed1,2);
+//     /* for(i=0;i<N;i++)
+//      {
+//          e[i]=2*e[i]%Q;
+//          e_r[i]=2*e_r[i]%Q;
+//      }
+//      */
 
-    byte_topoly(eb, e);
-    byte_topoly(rb, r);
-    byte_topoly(erb, e_r);
+//     byte_topoly(eb, e);
+//     byte_topoly(rb, r);
+//     byte_topoly(erb, e_r);
 
-    poly_ntt(r);
-    poly_pointwise(ar, a, r);
-    poly_ntt(e);
-    poly_add(c_0, ar, e);
+//     poly_ntt(r);
+//     poly_pointwise(ar, a, r);
+//     poly_ntt(e);
+//     poly_add(c_0, ar, e);
 
-    for (i = 0; i < PKE_POLY_BYTES; i++)
-        b[i] = pk[i];
+//     for (i = 0; i < PKE_POLY_BYTES; i++)
+//         b[i] = pk[i];
 
-    byte_topoly(b, bb);
-    // pol_naivemul(br,bb,r);
-    // poly_add(c_1,br,e_r);
+//     byte_topoly(b, bb);
+//     // pol_naivemul(br,bb,r);
+//     // poly_add(c_1,br,e_r);
 
-    // poly_ntt(bb);
+//     // poly_ntt(bb);
 
-    poly_pointwise(br, bb, r);
-    poly_ntt(e_r);
-    poly_add(c_1, br, e_r);
-    poly_invntt(c_0);
-    poly_invntt(c_1);
+//     poly_pointwise(br, bb, r);
+//     poly_ntt(e_r);
+//     poly_add(c_1, br, e_r);
+//     poly_invntt(c_0);
+//     poly_invntt(c_1);
 
-    for (i = 0; i < N; i++)
-        mm[i] = (m[i / 8] >> (i % 8)) & 1;
+//     for (i = 0; i < N; i++)
+//         mm[i] = (m[i / 8] >> (i % 8)) & 1;
 
-    for (i = 0; i < N; i++) {
+//     for (i = 0; i < N; i++) {
 
-        alpha[i] = (Remain(c_1[i]) % 2 + 2) % 2;
-        mm[i] = (mm[i] + alpha[i]) % 2;
-        c_2[i] = (c_0[i] + mm[i]) % Q;
+//         alpha[i] = (Remain(c_1[i]) % 2 + 2) % 2;
+//         mm[i] = (mm[i] + alpha[i]) % 2;
+//         c_2[i] = (c_0[i] + mm[i]) % Q;
 
-        if (c_1[i] > (Q - 1) / 2)
-            c_4[i] = c_1[i] - Q;
-        else
-            c_4[i] = c_1[i];
+//         if (c_1[i] > (Q - 1) / 2)
+//             c_4[i] = c_1[i] - Q;
+//         else
+//             c_4[i] = c_1[i];
 
-        if (c_4[i] < -(Q - 1) / 4 || c_4[i] > (Q - 1) / 4)
+//         if (c_4[i] < -(Q - 1) / 4 || c_4[i] > (Q - 1) / 4)
 
-            c_3[i] = 1;
+//             c_3[i] = 1;
 
-        else
-            c_3[i] = 0;
-    }
+//         else
+//             c_3[i] = 0;
+//     }
 
-    poly_tobyte(c, c_2);
-    for (i = 0; i < N / 8; i++) {
-        c[PKE_POLY_BYTES + i] = c_3[8 * i + 0];
-        c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 1] * 2;
-        c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 2] * 4;
-        c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 3] * 8;
-        c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 4] * 16;
-        c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 5] * 32;
-        c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 6] * 64;
-        c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 7] * 128;
-    }
+//     poly_tobyte(c, c_2);
+//     for (i = 0; i < N / 8; i++) {
+//         c[PKE_POLY_BYTES + i] = c_3[8 * i + 0];
+//         c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 1] * 2;
+//         c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 2] * 4;
+//         c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 3] * 8;
+//         c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 4] * 16;
+//         c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 5] * 32;
+//         c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 6] * 64;
+//         c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 7] * 128;
+//     }
 
-    for (i = 0; i < N / 8; i++)
-        printf("%u ", m[i]);
+//     for (i = 0; i < N / 8; i++)
+//         printf("%u ", m[i]);
 
-    printf("\n");
-    return 0;
+//     printf("\n");
+//     return 0;
 }
 
 int
