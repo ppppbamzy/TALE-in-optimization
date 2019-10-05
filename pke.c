@@ -270,7 +270,7 @@ int pke_dec(unsigned char *sk, unsigned long long sklen,
 
     int i;
     unsigned char c_2[PKE_POLY_BYTES], c_3[N / 8];
-    *mlen = N / 8;
+    *pointer_mlen = N / 8;
 
     // byte_topoly(sk,s);
     byte_topoly_s(sk, sprime);
@@ -486,7 +486,7 @@ pke_dec_with_param_fixed(unsigned char *sk, unsigned long long sklen,
 
     int i;
     unsigned char c_2[PKE_POLY_BYTES], c_3[N / 8];
-    *mlen = N / 8;
+    *pointer_mlen = N / 8;
 
     // byte_topoly(sk,s);
     byte_topoly_s(sk, sprime);
