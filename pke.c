@@ -19,17 +19,17 @@ unsigned long long pke_get_sk_byts() { return PKE_SECRETKEYBYTES; }
 
 unsigned long long pke_get_ct_byts() { return PKE_CIP_BYTES; }
 
-int16_t Remain(uint16_t a) {
-    int16_t b;
+// int16_t Remain(uint16_t a) {
+//     int16_t b;
 
-    b = a - Q + (((a > (Q - 1) / 2) - 1) & Q);
+//     b = a - Q + (((a > (Q - 1) / 2) - 1) & Q);
 
-    b += ((Q - 1) / 2) - (((b < -(Q - 1) / 4) - 1) & ((Q - 1) / 2));
+//     b += ((Q - 1) / 2) - (((b < -(Q - 1) / 4) - 1) & ((Q - 1) / 2));
     
-    b -= ((Q + 1) / 2) - (((b > (Q - 1) / 4) - 1) & ((Q + 1) / 2));
+//     b -= ((Q + 1) / 2) - (((b > (Q - 1) / 4) - 1) & ((Q + 1) / 2));
 
-    return b;
-}
+//     return b;
+// }
 
 /*-------------------key generation--------------------
  sprime, e_0 are sampled from the central binomial distribution
@@ -147,7 +147,7 @@ int pke_enc(unsigned char *pk, unsigned long long pklen, unsigned char *m,
             unsigned long long *pointer_clen) {
     uint16_t r[N], e[N], e_r[N], c_0[N], c_1[N], c_2[N], c_3[N];
     uint16_t ar[N], a[N], br[N], mm[N], bb[N], alpha[N];
-    int16_t c_4[N];
+    int16_t c_4[N], tmp;
     unsigned char seed[PKE_SEED_BYTES], b[PKE_POLY_BYTES]; 
     unsigned char seed1[3 * N / 2], rand[RAND_BTS];
     int i;
@@ -210,8 +210,14 @@ int pke_enc(unsigned char *pk, unsigned long long pklen, unsigned char *m,
         mm[i] = (m[i / 8] >> (i % 8)) & 1;
 
     for (i = 0; i < N; i++) {
-        alpha[i] = Remain(c_1[i]) & 1;
+
+        tmp = c_1[i] - Q + (((c_1[i] > (Q - 1) / 2) - 1) & Q);
+        tmp += ((Q - 1) / 2) - (((tmp < -(Q - 1) / 4) - 1) & ((Q - 1) / 2));
+        tmp -= ((Q + 1) / 2) - (((tmp > (Q - 1) / 4) - 1) & ((Q + 1) / 2));
+        alpha[i] = tmp & 1;
+
         mm[i] = (mm[i] + alpha[i]) % 2;
+
         c_2[i] = (c_0[i] + mm[i]) % Q;
 
         c_4[i] = c_1[i] - Q + (((c_1[i] > (Q - 1) / 2) - 1) & Q);
