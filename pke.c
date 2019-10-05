@@ -43,8 +43,8 @@ int16_t Remain(uint16_t a) {
  sk=s
 -----------------------------------------------------*/
 
-int pke_keygen(unsigned char *pk, unsigned long long *pklen, unsigned char *sk,
-               unsigned long long *sklen) {
+int pke_keygen(unsigned char *pk, unsigned long long *pointer_pklen,
+               unsigned char *sk, unsigned long long *pointer_sklen) {
     uint16_t sprime[N], s[N], e_0[N], bhat[N], s_ahat[N], a[N];
     unsigned char seed[PKE_SEED_BYTES], seed1[PKE_SEED_BYTES], seed2[N];
     int i;
@@ -147,7 +147,7 @@ int pke_keygen(unsigned char *pk, unsigned long long *pklen, unsigned char *sk,
 
 int pke_enc(unsigned char *pk, unsigned long long pklen, unsigned char *m,
             unsigned long long mlen, unsigned char *c,
-            unsigned long long *clen) {
+            unsigned long long *pointer_clen) {
     uint16_t r[N], e[N], e_r[N], c_0[N], c_1[N], c_2[N], c_3[N];
     uint16_t ar[N], a[N], br[N], mm[N], bb[N], alpha[N];
     int16_t c_4[N];
@@ -260,8 +260,9 @@ int pke_enc(unsigned char *pk, unsigned long long pklen, unsigned char *m,
     return 0;
 }
 
-int pke_dec(unsigned char *sk, unsigned long long sklen, unsigned char *c,
-            unsigned long long clen, unsigned char *m, unsigned long long *mlen)
+int pke_dec(unsigned char *sk, unsigned long long sklen,
+            unsigned char *c, unsigned long long clen, 
+            unsigned char *m, unsigned long long *pointer_mlen)
 
 {
     uint16_t mprime[N], c_1[N], s[N], cs[N], mm[N], cprime[N], sprime[N];
@@ -365,7 +366,7 @@ int pke_dec(unsigned char *sk, unsigned long long sklen, unsigned char *c,
 int pke_enc_with_param_fixed(unsigned char *pk, unsigned long long pklen,
                              unsigned char *m, unsigned long long mlen,
                              unsigned char *rand, unsigned long long randbyts,
-                             unsigned char *c, unsigned long long *clen)
+                             unsigned char *c, unsigned long long *pointer_clen)
 
 {
     uint16_t r[N], e[N], e_r[N], c_0[N], c_1[N], c_2[N], c_3[N], ar[N], a[N],
@@ -477,7 +478,7 @@ int pke_enc_with_param_fixed(unsigned char *pk, unsigned long long pklen,
 int
 pke_dec_with_param_fixed(unsigned char *sk, unsigned long long sklen,
                          unsigned char *c, unsigned long long clen,
-                         unsigned char *m, unsigned long long *mlen)
+                         unsigned char *m, unsigned long long *pointer_mlen)
 
 {
     uint16_t mprime[N], c_1[N], s[N], cs[N], mm[N], cprime[N], sprime[N];

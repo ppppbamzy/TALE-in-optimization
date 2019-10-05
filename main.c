@@ -13,6 +13,7 @@ int main() {
     unsigned long long sklen;
     unsigned char m[128];
     unsigned char c[2048];
+    unsigned long long clen;
     
     clock_t start, finish;
     double total_time;
@@ -29,17 +30,17 @@ int main() {
     pke_keygen(pk, &pklen, sk, &sklen);
     start = clock();
     for (int i = 0; i < NTESTS; i++) {
-        pke_enc(pk, PKE_PUBLICKEYBYTES, m, PKE_MESS_BYTES, c, PKE_CIP_BYTES);
+        pke_enc(pk, PKE_PUBLICKEYBYTES, m, PKE_MESS_BYTES, c, &clen);
     }
     finish = clock();
     total_time = (double)(finish - start) / CLOCKS_PER_SEC;
     printf("enc %f us\n", (total_time * 1000000 / NTESTS));
 
     pke_keygen(pk, &pklen, sk, &sklen);
-    pke_enc(pk, PKE_PUBLICKEYBYTES, m, PKE_MESS_BYTES, c, PKE_CIP_BYTES);
+    pke_enc(pk, PKE_PUBLICKEYBYTES, m, PKE_MESS_BYTES, c, &clen);
     start = clock();
     for (int i = 0; i < NTESTS; i++) {
-        pke_enc(pk, PKE_PUBLICKEYBYTES, m, PKE_MESS_BYTES, c, PKE_CIP_BYTES);
+        pke_enc(pk, PKE_PUBLICKEYBYTES, m, PKE_MESS_BYTES, c, &clen);
     }
     finish = clock();
     total_time = (double)(finish - start) / CLOCKS_PER_SEC;
