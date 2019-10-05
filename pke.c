@@ -21,17 +21,15 @@ unsigned long long pke_get_ct_byts() { return PKE_CIP_BYTES; }
 
 int16_t Remain(uint16_t a) {
     int16_t b;
-    if (a > (Q - 1) / 2)
-        b = a - Q;
-    else
-        b = a;
+
+    b = a - Q + (((a > (Q - 1) / 2) - 1) & Q);
 
     if (b < -(Q - 1) / 4)
-        return b + (Q - 1) / 2;
+        b = b + (Q - 1) / 2;
     else if (b > (Q - 1) / 4)
-        return b - (Q + 1) / 2;
-    else
-        return b;
+        b = b - (Q + 1) / 2;
+
+    return b;
 }
 
 /*-------------------key generation--------------------
@@ -172,19 +170,15 @@ int pke_enc(unsigned char *pk, unsigned long long pklen, unsigned char *m,
         e[i] = ((seed1[i / 8 + N / 2] >> (i % 8)) & 1) -
                ((seed1[i / 8 + 5 * N / 8] >> (i % 8)) & 1) +
                ((seed1[i / 8 + 3 * N / 4] >> (i % 8)) & 1) -
-               ((seed1[i / 8 + 7 * N / 8] >> (i % 8)) & 1) + Q;
+               ((seed1[i / 8 + 7 * N / 8] >> (i % 8)) & 1) * 2 % Q;
         e_r[i] = ((seed1[i / 8 + N] >> (i % 8)) & 1) -
                  ((seed1[i / 8 + 9 * N / 8] >> (i % 8)) & 1) +
                  ((seed1[i / 8 + 5 * N / 4] >> (i % 8)) & 1) -
-                 ((seed1[i / 8 + 11 * N / 8] >> (i % 8)) & 1) + Q;
+                 ((seed1[i / 8 + 11 * N / 8] >> (i % 8)) & 1) * 2 % Q;
     }
     // cbd(r,seed1,0);
     // cbd(e,seed1,1);
     // cbd(e_r,seed1,2);
-    for (i = 0; i < N; i++) {
-        e[i] = 2 * e[i] % Q;
-        e_r[i] = 2 * e_r[i] % Q;
-    }
 
     poly_tobyte(rand, e);
     poly_tobyte(rand + PKE_POLY_BYTES, r);
@@ -221,27 +215,22 @@ int pke_enc(unsigned char *pk, unsigned long long pklen, unsigned char *m,
         mm[i] = (mm[i] + alpha[i]) % 2;
         c_2[i] = (c_0[i] + mm[i]) % Q;
 
-        if (c_1[i] > (Q - 1) / 2)
-            c_4[i] = c_1[i] - Q;
-        else
-            c_4[i] = c_1[i];
+        c_4[i] = c_1[i] - Q + (((c_1[i] > (Q - 1) / 2) - 1) & Q);
 
-        if (c_4[i] < -(Q - 1) / 4 || c_4[i] > (Q - 1) / 4)
-            c_3[i] = 1;
-        else
-            c_3[i] = 0;
+        c_3[i] = (c_4[i] < -(Q - 1) / 4 || c_4[i] > (Q - 1) / 4);
     }
 
     poly_tobyte(c, c_2);
     for (i = 0; i < N / 8; i++) {
-        c[PKE_POLY_BYTES + i] = c_3[8 * i + 0];
-        c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 1] * 2;
-        c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 2] * 4;
-        c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 3] * 8;
-        c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 4] * 16;
-        c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 5] * 32;
-        c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 6] * 64;
-        c[PKE_POLY_BYTES + i] = c[PKE_POLY_BYTES + i] + c_3[8 * i + 7] * 128;
+        c[PKE_POLY_BYTES + i] = 0;
+        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 0];
+        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 1] * 2;
+        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 2] * 4;
+        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 3] * 8;
+        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 4] * 16;
+        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 5] * 32;
+        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 6] * 64;
+        c[PKE_POLY_BYTES + i] ^= c_3[8 * i + 7] * 128;
     }
 
     // for(i=0;i<mlen;i++)
