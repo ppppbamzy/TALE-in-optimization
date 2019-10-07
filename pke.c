@@ -166,14 +166,14 @@ int pke_enc(unsigned char *pk, unsigned long long pklen, unsigned char *m,
                ((seed1[i / 8 + N / 8] >> (i % 8)) & 1) +
                ((seed1[i / 8 + N / 4] >> (i % 8)) & 1) -
                ((seed1[i / 8 + 3 * N / 8] >> (i % 8)) & 1) + Q;
-        e[i] = ((seed1[i / 8 + N / 2] >> (i % 8)) & 1) -
+        e[i] = (((seed1[i / 8 + N / 2] >> (i % 8)) & 1) -
                ((seed1[i / 8 + 5 * N / 8] >> (i % 8)) & 1) +
                ((seed1[i / 8 + 3 * N / 4] >> (i % 8)) & 1) -
-               ((seed1[i / 8 + 7 * N / 8] >> (i % 8)) & 1) * 2 % Q;
-        e_r[i] = ((seed1[i / 8 + N] >> (i % 8)) & 1) -
+               ((seed1[i / 8 + 7 * N / 8] >> (i % 8)) & 1) + Q) * 2 % Q;
+        e_r[i] = (((seed1[i / 8 + N] >> (i % 8)) & 1) -
                  ((seed1[i / 8 + 9 * N / 8] >> (i % 8)) & 1) +
                  ((seed1[i / 8 + 5 * N / 4] >> (i % 8)) & 1) -
-                 ((seed1[i / 8 + 11 * N / 8] >> (i % 8)) & 1) * 2 % Q;
+                 ((seed1[i / 8 + 11 * N / 8] >> (i % 8)) & 1) + Q) * 2 % Q;
     }
     // cbd(r,seed1,0);
     // cbd(e,seed1,1);
