@@ -85,7 +85,7 @@ int pke_keygen(unsigned char *pk, unsigned long long *pointer_pklen,
         e_0[i] = (((seed2[i / 8 + N / 2] >> (i % 8)) & 1) -
                  ((seed2[i / 8 + 5 * N / 8] >> (i % 8)) & 1) +
                  ((seed2[i / 8 + 3 * N / 4] >> (i % 8)) & 1) -
-                 ((seed2[i / 8 + 7 * N / 8] >> (i % 8)) & 1)) * 2 % Q;
+                 ((seed2[i / 8 + 7 * N / 8] >> (i % 8)) & 1) + Q) * 2 % Q;
     }
     s[0] = (s[0] + 1) % Q;
 
