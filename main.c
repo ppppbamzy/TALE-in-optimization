@@ -11,7 +11,7 @@ int main() {
     unsigned char sk[PKE_SECRETKEYBYTES];
     unsigned long long pklen;
     unsigned long long sklen;
-    unsigned char m[128] = "Etiam vitae nisi id tortor venenatis accumsan. Etiam enim purus, tristique eget mi quis, pretium suscipit arcu. Praesent alique";
+    unsigned char m[128] = "Here's a test message of length 128 bytes. If you can see these words, the encryption and decryption algorithms are successful.";
     unsigned char c[2048];
     unsigned long long mlen = PKE_MESS_BYTES;
     unsigned long long clen = PKE_CIP_BYTES;
